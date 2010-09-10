@@ -86,7 +86,7 @@ class syntax_plugin_w3pw extends DokuWiki_Syntax_Plugin {
         $c = empty($conf['plugin']['w3pw']) ? array() : $conf['plugin']['w3pw'];
 
         $link = $c['url'] ? $c['url'] : '/w3pw/view.php';
-        $link .= '?id='.$data['object'];
+        $link .= '?ID='.$data['object'];
 
         $title = !empty($data['title']) ? $data['title'] : 'click to see';
         $onclick = "var w=window.open(this.href, 'w3pw', 'width=560,height=400,left=0,top=0,scrollbars=yes,status=yes');w.focus();return false;";
