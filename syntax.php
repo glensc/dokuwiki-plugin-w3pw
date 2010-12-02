@@ -12,10 +12,6 @@ if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 require_once(DOKU_PLUGIN.'syntax.php');
 
 /**
-$conf['plugin']['w3pw']['url'] = '/w3pw/';
- */
-
-/**
  * All DokuWiki plugins to extend the parser/rendering mechanism
  * need to inherit from this class
  */
@@ -53,9 +49,8 @@ class syntax_plugin_w3pw extends DokuWiki_Syntax_Plugin {
      * Connect pattern to lexer
      */
     function connectTo($mode) {
-        $this->Lexer->addSpecialPattern('\{\{w3pw>.+?\}\}', $mode, 'plugin_w3pw');
+        $this->Lexer->addSpecialPattern('\{\{w3pw>.*?\}\}', $mode, 'plugin_w3pw');
     }
-
 
     /**
      * Handle the match
@@ -68,7 +63,7 @@ class syntax_plugin_w3pw extends DokuWiki_Syntax_Plugin {
         // extract title
         list($match, $title) = explode('|', $match, 2);
 
-        $data = array('object' => trim($match), 'title' => trim($title));
+        $data = array('id' => trim($match), 'title' => trim($title));
         return $data;
     }
 
@@ -81,14 +76,23 @@ class syntax_plugin_w3pw extends DokuWiki_Syntax_Plugin {
             return false;
         }
 
-        global $conf;
-        // get plugin config
-        $c = empty($conf['plugin']['w3pw']) ? array() : $conf['plugin']['w3pw'];
+        $link = $this->getConf('url');
+        if (empty($link)) {
+            $link = '/w3pw/';
+        }
 
-        $link = $c['url'] ? $c['url'] : '/w3pw/view.php';
-        $link .= '?ID='.$data['object'];
+        if (empty($data['id'])) {
+            $link .= 'main.php';
+            $title = $this->getLang('open_manager');
+        } else {
+            $link .= 'view.php?ID='.$data['id'];
+            $title = $this->getLang('view_password');
+        }
 
-        $title = !empty($data['title']) ? $data['title'] : 'click to see';
+        if ($data['title']) {
+            $title = $data['title'];
+        }
+
         $onclick = "var w=window.open(this.href, 'w3pw', 'width=560,height=400,left=0,top=0,scrollbars=yes,status=yes');w.focus();return false;";
 
         $renderer->doc .= '<a href="'.$link.'" onClick="'.$onclick.'">'.hsc($title).'</a>';
