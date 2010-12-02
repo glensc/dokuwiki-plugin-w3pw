@@ -42,14 +42,14 @@ class syntax_plugin_w3pw extends DokuWiki_Syntax_Plugin {
      * Where to sort in?
      */
     function getSort() {
-        return 306;
+        return 290;
     }
 
     /**
      * Connect pattern to lexer
      */
     function connectTo($mode) {
-        $this->Lexer->addSpecialPattern('\{\{w3pw>.*?\}\}', $mode, 'plugin_w3pw');
+        $this->Lexer->addSpecialPattern('\[\[w3pw>.*?\]\]', $mode, 'plugin_w3pw');
     }
 
     /**
@@ -57,7 +57,7 @@ class syntax_plugin_w3pw extends DokuWiki_Syntax_Plugin {
      */
     function handle($match, $state, $pos, &$handler) {
         // extract out of container
-        // php -r 'echo strlen("{{w3pw>");' = 7
+        // php -r 'echo strlen("[[w3pw>");' = 7
 		$match = substr($match, 7, -2);
 
         // extract title
